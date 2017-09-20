@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Easy Tree View example</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        
+    </head>
+    <body>
+
+		<div id="myTree">
+			
+		</div>
+
+		<script type="text/javascript">
+			
+			var myData = [
+				{name:"Level - 1 - Item 1", children: [
+					{name:"Level - 1-1 - Item 1", children:[]},
+					{name:"Level - 1-1 - Item 2", children:[
+						{name:"Level 1-1-2 - Item 1", children:[]}
+					]},
+				]},
+				{name:"Level - 1 - Item 2", children: [
+					{name:"Level 1-2 - Item 1", children:[]}
+				]},
+				{name:"Level - 1 - Item 3", children: []}
+			];
+			
+			var TreeView = (function(){
+				var processChildren = function(parentElement, childrenData, currentLevel, displayLevel) {
+					$(childrenData).each(function(i){
+						var childData = childrenData[i];
+				
+						var element = $('<li>');
+						var textElement = $('<div>');
+						textElement.text(childData.name);
+						element.append(textElement);
+						parentElement.append(element);
+						
+						if (childData.children.length) {
+							var newLevelElement = $('<ul>');
+							if (currentLevel > displayLevel) newLevelElement.css('display','none');
+							element.append(newLevelElement);
+							textElement.click(function(){
+								newLevelElement.slideToggle('slow');
+							});
+							processChildren(newLevelElement, childData.children, currentLevel+1, displayLevel);
+						}
+					});
+				}
+				
+				var create = function(treeId, treeData, displayLevel) {
+					var rootElement = $('<ul>');
+					$('#' + treeId).append(rootElement);
+					processChildren(rootElement, treeData, 1, displayLevel);
+				}
+				
+				return {
+					create: create
+				}
+			})();
+			
+			TreeView.create('myTree', myData, 1);
+			
+		</script>
+
+
+    </body>
+</html>
